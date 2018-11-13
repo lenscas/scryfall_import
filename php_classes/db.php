@@ -12,9 +12,10 @@ class db {
 	public function saveExec (PDOStatement $sth){
 		$success = $sth->execute();
 		if(!$success){
-			$this->pdo->rollBack();
+
 			var_dump($sth->errorInfo());
 			$sth->debugDumpParams();
+			$this->pdo->rollBack();
 			throw new Exception("db error");
 		}
 	}

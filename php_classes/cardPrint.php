@@ -75,6 +75,6 @@ class cardPrint{
 		$this->setId=$card->set;
 		$this->languageid=$this->getLanguageId($card->lang);
 		$this->db->saveExec($this->insertPrintSQL);
-		return $this->pdo->lastInsertId();
+		return $card->id;
 	}
 }

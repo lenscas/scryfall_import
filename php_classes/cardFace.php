@@ -18,7 +18,8 @@ class cardFace {
 				toughness,
 				loyalty,
 				manaCostId,
-				colorid
+				colorid,
+				typeLineid
 			) VALUES (
 				:cardId,
 				:name,
@@ -27,7 +28,8 @@ class cardFace {
 				:toughness,
 				:loyalty,
 				:manaCostId,
-				:colorId
+				:colorId,
+				:typeLineid
 			)"
 		);
 		$this->insertFace->bindParam(":cardId"     ,$this->oracleId);
@@ -38,23 +40,29 @@ class cardFace {
 		$this->insertFace->bindParam(":loyalty"    ,$this->loyalty);
 		$this->insertFace->bindParam(":manaCostId" ,$this->manaCostId);
 		$this->insertFace->bindParam(":colorId"    ,$this->colorId);
+		$this->insertFace->bindParam(":typeLineid"    ,$this->typeLineId);
 	}
 	public function getAllCardFacesFromCard(stdClass $card){
+		foreach( ($card->card_faces ?? []) as $key=>$value){
+			$card->card_faces[$key]->colors = $card->card_faces[$key]->colors ?? $card->colors;
+			$card->card_faces[$key]->image_uris = $card->card_faces[$key]->image_uris ?? $card->image_uris;
+		}
 		if($card->card_faces ?? false){
 			return $card->card_faces;
 		} else {
 			return [$card];
 		}
 	}
-	public function insertCardFace(stdClass $cardFace, string $oracleId,int $costId, int $colorId){
+	public function insertCardFace(stdClass $cardFace, string $oracleId,int $costId, int $colorId,int $typeLineId){
 		$this->faceName = $cardFace->name;
 		$this->oracleId = $oracleId;
 		$this->oracleText = $cardFace->oracle_text;
 		$this->power = $cardFace->power ?? null;
-		$this->thoughness = $cardFace->toughness ?? null;
+		$this->toughness = $cardFace->toughness ?? null;
 		$this->loyalty = $cardFace->loyalty ?? null;
 		$this->manaCostId = $costId;
 		$this->colorId = $colorId;
+		$this->typeLineId = $typeLineId;
 		return $this->db->fetchOrInsert($this->checkIfFaceExists,$this->insertFace);
 	}
 }
