@@ -44,8 +44,6 @@ class types {
 					$typeArray[$at] = "";
 					$didSpace= true;
 				}
-			} elseif($didSpace && $char=="—"){
-				return;
 			} else {
 				$didSpace = false;
 			}

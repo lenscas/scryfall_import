@@ -42,15 +42,15 @@ array_walk($content, function($card,$key) use (
 	$db->pdo->beginTransaction();
 	echo $card->name,"\n";
 	$legalId = $legalities->getLegalId($card);
-	$colorIdentityid = $colorArray->getCorrectColorCombinationId($arrayTableInterface,$card->color_identity);
+	$colorIdentityid = $colorArray->getCorrectColorCombinationId($card->color_identity);
 	$cardDB->insertCard($card,$legalId,$colorIdentityid);
 	$cardFaces = $cardFaceDB->getAllCardFacesFromCard($card);
 	$printId = $cardPrint->insertPrint($card);
 	echo "doing faces : \n";
 	foreach($cardFaces as $key=>$cardFace){
 		echo $cardFace->name,"\n";
-		$costId = $costs->getCorrectCostId($arrayTableInterface,$cardFace->mana_cost);
-		$colorId = $colorArray->getCorrectColorCombinationId($arrayTableInterface,$cardFaces->colors ?? []);
+		$costId = $costs->getCorrectCostId($cardFace->mana_cost);
+		$colorId = $colorArray->getCorrectColorCombinationId($cardFace->colors);
 		$typeLineId = $types->getCorrectTypeLineId($cardFace->type_line);
 		$cardFaceDB->insertCardFace($cardFace,$card->oracle_id,$costId,$colorId,$typeLineId);
 		$printFaceId = $printFace->insertPrintFace($cardFace,$printId);

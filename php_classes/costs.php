@@ -1,5 +1,5 @@
 <?php
-class costs extends BasicArrayTable {
+class costs{
 	public function __construct(db $db){
 		$this->db = $db;
 		$this->pdo = $db->pdo;
@@ -17,7 +17,124 @@ class costs extends BasicArrayTable {
 
 		$this->getSymbolsInCost = $this->pdo->prepare("SELECT symbolid AS id FROM SymbolsInCosts WHERE costid = :costId");
 		$this->getSymbolsInCost->bindParam(":costId",$this->costId);
+		$this->getCostsBySingleSymbol = $this->pdo->prepare("
+			SELECT Costs.id
+			FROM Costs,SymbolsInCosts
+			WHERE SymbolsInCosts.symbolid=:symbolId
+			AND SymbolsInCosts.costid=Costs.id
+		");
+		$this->getCostsBySingleSymbol->bindParam(":symbolId",$this->symbolId);
 	}
+	private function splitSymbolString(string $symbolstr){
+		$rawArray = str_split($symbolstr);
+		$symbolArray =array();
+		$at = -1;
+		array_walk($rawArray, function($char) use (&$symbolArray,&$at){
+			if($char=="{"){
+				$at = $at +1;
+				$symbolArray[$at] = "";
+			}
+			$symbolArray[$at] = $symbolArray[$at] . $char;
+		});
+		return $symbolArray;
+	}
+	public function makeArrayHolder(){
+		$this->db->saveExec($this->costInsert);
+		return $this->pdo->lastInsertId();
+	}
+	public function insertSymbolIdInArrayHolder($symbolId,$costId){
+		$this->costId=$costId;
+		$this->symbolId = $symbolId;
+		$this->db->saveExec($this->symbolCostInsert);
+	}
+	public function getCostsContainingSymbol(int $symbolId){
+		$this->symbolId = $symbolId;
+		$this->db->saveExec($this->getCostsBySingleSymbol);
+		$data = array_map(function($v){return $v["id"];},$this->getCostsBySingleSymbol->fetchAll(PDO::FETCH_ASSOC));
+		return $data;
+	}
+	public function somethingElse(array $costsIds,$symbolId,$symbolCount){
+		$query = "
+			SELECT Costs.id
+			FROM Costs
+			INNER JOIN SymbolsInCosts
+			ON SymbolsInCosts.costId=Costs.id
+			WHERE Costs.id IN ({array})
+			AND SymbolsInCosts.symbolId = $symbolId
+		";
+		$costIdsAsString = implode($costsIds,",");
+		$queryReplaced = str_replace("{array}",$costIdsAsString,$query);
+		$res = $this->pdo->query($queryReplaced);
+		if(!$res){
+			echo $queryReplaced;
+		}
+		$data = $res->fetchAll(PDO::FETCH_ASSOC);
+		$toReturn = array();
+		foreach($data as $key=>$value){
+			$count = $this->pdo->query("SELECT count(*) FROM SymbolsInCosts
+				WHERE symbolId = $symbolId
+				AND costsId = ". $value["id"]);
+			if($count === $symbolCount){
+				$toReturn[] = $value["id"];
+			}
+		}
+		return $toReturn;
+	}
+	public function getCorrectCostId(string $strCost){
+		$splited = $this->splitSymbolString($strCost);
+		$asIds = [];
+		$costs = [];
+		foreach($splited as $key=>$value){
+			$this->symbolSTR = $value;
+			$this->db->saveExec($this->symbolToId);
+			$id = $this->symbolToId->fetch(PDO::FETCH_ASSOC)["id"] ?? false;
+			if(!$id){
+				$this->db->saveExec($this->symbolInsert);
+				$id = $this->pdo->lastInsertId();
+			}
+			$asIds[] = $id;
+			if(! ($costs[$id] ?? false)){
+				$costs[$id] = 0;
+			}
+			$costs[$id]++;
+		}
+
+		$allPossible = array();
+		$first = true;
+		foreach($asIds as $key=>$id){
+			if($first){
+				$allPossible = $this->getCostsContainingSymbol($id);
+				$first=false;
+			} else {
+				$allPossible = $this->somethingElse($allPossible,$id,$costs[$id]);
+			}
+			if( count($allPossible) == 0 ){
+				$lineId = $this->makeArrayHolder();
+				foreach($asIds as $key=>$newIds){
+					$this->insertSymbolIdInArrayHolder($newIds,$lineId);
+				}
+				return $lineId;
+			}
+		}
+		foreach($allPossible as $key=>$possible){
+			$this->costId = $possible;
+			$this->db->saveExec($this->getSymbolsInCost);
+			$ids = $this->getSymbolsInCost->fetchAll(PDO::FETCH_ASSOC);
+			var_dump($ids);
+			var_dump($asIds);
+			if(count($ids) === count($asIds)){
+				echo "in count";
+				return $possible;
+			}
+		}
+		$lineId = $this->makeArrayHolder();
+		foreach($asIds as $key=>$newIds){
+			$this->insertSymbolIdInArrayHolder($newIds,$lineId);
+		}
+		return $lineId;
+
+	}
+	/*
 	public function getPossibleArrays(array $symbolArray){
 		$str = '
 			SELECT id FROM Costs WHERE Costs.id IN (
@@ -119,8 +236,12 @@ class costs extends BasicArrayTable {
 			}
 			return $this->insertCost($costs);
 		} else {
-			
+
 		}
 	}
 	*/
 }
+/*
+fury sliver -> 1 te veel
+shahrzad -> 1 te weinig
+*/

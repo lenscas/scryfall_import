@@ -2,7 +2,7 @@
 class db {
 	public function __construct(){
 		$host = '127.0.0.1';
-		$db   = 'ProjectC';
+		$db   = 'projectC';
 		$user = 'C#';
 		$pass = 'C#';
 
@@ -15,7 +15,6 @@ class db {
 
 			var_dump($sth->errorInfo());
 			$sth->debugDumpParams();
-			$this->pdo->rollBack();
 			throw new Exception("db error");
 		}
 	}
