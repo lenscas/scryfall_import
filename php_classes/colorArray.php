@@ -25,6 +25,7 @@ class colorArray extends BasicArrayTable {
 			AND ColorsInCombinations.combinationId=ColorCombinations.id
 		");
 		$this->getColorArraysBySingleColor->bindParam(":colorId",$this->colorId);
+		$this->cache = array();
 	}
 	public function getPossibleArrays(array $colorArray){
 		if(count($colorArray)===0){
@@ -107,6 +108,10 @@ class colorArray extends BasicArrayTable {
 		$this->db->saveExec($this->insertColorInCombinations);
 	}
 	public function getCorrectColorCombinationId(array $colors){
+		$colorsAsSTR = json_encode($colors);
+		if( ($this->cache[$colorsAsSTR] ?? "" ) !== "" ){
+			return $this->cache[$colorsAsSTR];
+		}
 		if(! ($colors || count($colors))){
 			$res = $this->pdo->query("
 				SELECT ColorCombinations.id
@@ -119,8 +124,11 @@ class colorArray extends BasicArrayTable {
 				LIMIT 1
 			")->fetch(PDO::FETCH_ASSOC);
 			if(!$res){
-				return $this->makeArrayHolder();
+				$id = $this->makeArrayHolder();
+				$this->cache[$colorsAsSTR] = $id;
+				return $id;
 			}
+			$this->cache[$colorsAsSTR] = $res["id"];
 			return $res["id"];
 
 		}
@@ -150,6 +158,7 @@ class colorArray extends BasicArrayTable {
 				foreach($asIds as $key=>$newIds){
 					$this->insertSymbolIdInArrayHolder($newIds,$lineId);
 				}
+				$this->cache[$colorsAsSTR] = $lineId;
 				return $lineId;
 			}
 		}
@@ -158,6 +167,7 @@ class colorArray extends BasicArrayTable {
 			$this->db->saveExec($this->getColorsInColorCombination);
 			$ids = $this->getColorsInColorCombination->fetchAll(PDO::FETCH_ASSOC);
 			if(count($ids) === count($asIds)){
+				$this->cache[$colorsAsSTR] = $possible;
 				return $possible;
 			}
 		}
@@ -165,6 +175,7 @@ class colorArray extends BasicArrayTable {
 		foreach($asIds as $key=>$newIds){
 			$this->insertSymbolIdInArrayHolder($newIds,$lineId);
 		}
+		$this->cache[$colorsAsSTR] = $lineId;
 		return $lineId;
 
 	}

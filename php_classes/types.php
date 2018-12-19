@@ -20,6 +20,7 @@ class types {
 
 		$this->getTypeLinesBySingleType = $this->pdo->prepare("SELECT TypeLine.id FROM TypeLine,TypesInLine WHERE TypesInLine.typeId=:typeId AND TypesInLine.lineId=TypeLine.id");
 		$this->getTypeLinesBySingleType->bindParam(":typeId",$this->typeId);
+		$this->cache = array();
 
 	}
 	private function split($str, $len = 1) {
@@ -84,6 +85,9 @@ class types {
 		$this->db->saveExec($this->typesInLineInsert);
 	}
 	public function getCorrectTypeLineId(string $strTypeLine){
+		if( ($this->cache[$strTypeLine] ?? "") !== "" ){
+			return $this->cache[$strTypeLine];
+		}
 		$splited = $this->splitTypeString($strTypeLine);
 		$asIds = [];
 		foreach($splited as $key=>$value){
@@ -106,12 +110,12 @@ class types {
 			} else {
 				$allPossible = $this->somethingElse($allPossible,$id);
 			}
-			echo count($allPossible);
 			if( count($allPossible) ==0 ){
 				$lineId = $this->makeArrayHolder();
 				foreach($asIds as $key=>$newIds){
 					$this->insertTypeIdInArrayHolder($newIds,$lineId);
 				}
+				$this->cache[$strTypeLine] = $lineId;
 				return $lineId;
 			}
 		}
@@ -120,6 +124,7 @@ class types {
 			$this->db->saveExec($this->getTypesInLine);
 			$ids = $this->getTypesInLine->fetchAll(PDO::FETCH_ASSOC);
 			if(count($ids) === count($asIds)){
+				$this->cache[$strTypeLine] = $possible;
 				return $possible;
 			}
 		}
@@ -127,6 +132,7 @@ class types {
 		foreach($asIds as $key=>$newIds){
 			$this->insertTypeIdInArrayHolder($newIds,$lineId);
 		}
+		$this->cache[$strTypeLine] = $lineId;
 		return $lineId;
 
 	}

@@ -2,7 +2,7 @@ local req = require"requests"
 local DBI = require"DBI"
 local pos = require"posix.time"
 local term  = require"term"
-local dbh = assert(DBI.Connect('MySQL', "ProjectC", "C#","C#", "localhost", 3306))
+local dbh = assert(DBI.Connect('MySQL', "projectC", "C#","C#", "localhost", 3306))
 
 local insertSet = assert(dbh:prepare([[
 INSERT INTO `Set`(

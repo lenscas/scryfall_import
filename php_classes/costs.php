@@ -24,6 +24,7 @@ class costs{
 			AND SymbolsInCosts.costid=Costs.id
 		");
 		$this->getCostsBySingleSymbol->bindParam(":symbolId",$this->symbolId);
+		$this->cache = array();
 	}
 	private function splitSymbolString(string $symbolstr){
 		$rawArray = str_split($symbolstr);
@@ -81,6 +82,9 @@ class costs{
 		return $toReturn;
 	}
 	public function getCorrectCostId(string $strCost){
+		if( ($this->cache[$strCost] ?? "") !==""){
+			return $this->cache[$strCost];
+		}
 		$splited = $this->splitSymbolString($strCost);
 		$asIds = [];
 		$costs = [];
@@ -113,6 +117,7 @@ class costs{
 				foreach($asIds as $key=>$newIds){
 					$this->insertSymbolIdInArrayHolder($newIds,$lineId);
 				}
+				$this->cache[$strCost] = $lineId;
 				return $lineId;
 			}
 		}
@@ -124,6 +129,7 @@ class costs{
 			var_dump($asIds);
 			if(count($ids) === count($asIds)){
 				echo "in count";
+				$this->cache[$strCost] = $possible;
 				return $possible;
 			}
 		}
@@ -131,6 +137,7 @@ class costs{
 		foreach($asIds as $key=>$newIds){
 			$this->insertSymbolIdInArrayHolder($newIds,$lineId);
 		}
+		$this->cache[$strCost] = $lineId;
 		return $lineId;
 
 	}

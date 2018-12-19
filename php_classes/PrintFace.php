@@ -8,7 +8,7 @@ class printFace {
 		$this->insertPrintFace->bindParam(":flavorText",$this->flavorText);
 	}
 	public function insertPrintFace($cardFace,$printId){
-		$this->flavorText = $cardFace->flavor_text;
+		$this->flavorText = $cardFace->flavor_text ?? null;
 		$this->printId = $printId;
 		$this->db->saveExec($this->insertPrintFace);
 		return $this->pdo->lastInsertId();

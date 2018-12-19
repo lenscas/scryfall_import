@@ -22,10 +22,8 @@ $types = new types($db);
 $printFace =  new PrintFace($db);
 $imageUris = new imageUris($db);
 
-echo "Read content:\n";
-$content = json_decode(file_get_contents("scryfall-all-cards.json"));
-echo "Done reading content\n";
-array_walk($content, function($card,$key) use (
+$files = glob("./splitted/*.json");
+array_walk($files, function($cardFile,$key) use (
 	&$content,
 	$costs,
 	$db,
@@ -39,6 +37,7 @@ array_walk($content, function($card,$key) use (
 	$printFace,
 	$imageUris
 	){
+	$card = json_decode(file_get_contents($cardFile));
 	$db->pdo->beginTransaction();
 	echo $card->name,"\n";
 	$legalId = $legalities->getLegalId($card);
