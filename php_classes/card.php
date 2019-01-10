@@ -18,7 +18,12 @@ class card {
 				:EdhrecRank,
 				:colorIdentityid,
 				:legalitiesid
-			)"
+			)
+			ON DUPLICATE KEY UPDATE
+				EdhrecRank=:EdhrecRank,
+				colorIdentityid=:colorIdentityid,
+				legalitiesid=:legalitiesid
+			"
 		);
 		$this->insertCard->bindParam(":oracleId",$this->oracleId);
 		$this->insertCard->bindParam(":EdhrecRank",$this->EdhrecRank);
@@ -27,7 +32,7 @@ class card {
 	}
 	public function insertCard(stdClass $card, int $legalId, int $colorIdentityId){
 		$this->oracleId = $card->oracle_id;
-		
+
 		$this->db->saveExec($this->checkIfCardExists);
 		$this->colorIdentityid = $colorIdentityId;
 		$res = $this->checkIfCardExists->fetch(PDO::FETCH_ASSOC);

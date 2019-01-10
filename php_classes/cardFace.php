@@ -30,7 +30,18 @@ class cardFace {
 				:manaCostId,
 				:colorId,
 				:typeLineid
-			)"
+			)
+			ON DUPLICATE KEY UPDATE
+				cardId=     :cardId,
+				name=       :name,
+				oracleText= :oracleText,
+				power=      :power,
+				toughness=  :toughness,
+				loyalty=    :loyalty,
+				manaCostId= :manaCostId,
+				colorId=    :colorId,
+				typeLineid=  :typeLineid
+			"
 		);
 		$this->insertFace->bindParam(":cardId"     ,$this->oracleId);
 		$this->insertFace->bindParam(":name"       ,$this->faceName);

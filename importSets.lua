@@ -26,6 +26,15 @@ INSERT INTO `Set`(
 	?,
 	?
 )
+ON DUPLICATE KEY UPDATE
+	`name`=?,
+	`setType`=?,
+	`releasedAt`=?,
+	`blockId`=?,
+	`paretnSetCode`=?,
+	`cardCount`=?,
+	`foilOnly`=?,
+	`iconSVG`=?
 ]]))
 local insertBlock = assert(dbh:prepare([[
 INSERT INTO `Block` (
@@ -35,6 +44,8 @@ INSERT INTO `Block` (
 	?,
 	?
 )
+ON DUPLICATE KEY UPDATE
+	name=?
 ]]))
 local blockTable = {}
 local function saveRun(sth,...)
@@ -71,12 +82,20 @@ for k,set in ipairs(setRes.data) do
 	)
 
 	if set.block_code and not blockTable[set.block_code] then
-		saveRun(insertBlock, set.block_code,set.block)
+		saveRun(insertBlock, set.block_code,set.block,set.block)
 		blockTable[set.block_code] = true
 	end
 	saveRun(
 		insertSet,
 		set.code,
+		set.name,
+		set.setType,
+		timeStamp,
+		set.block_code,
+		set.parent_set_code,
+		set.card_count,
+		set.foil_only,
+		set.icon_svg_uri,
 		set.name,
 		set.setType,
 		timeStamp,

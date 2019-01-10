@@ -26,17 +26,6 @@ description=
 long_line_behaviour=1
 long_line_column=80
 
-[files]
-current_page=4
-FILE_NAME_0=1759;PHP;0;EUTF-8;1;1;0;%2Fhome%2Flenscas%2Flua%2Fimport_scryfall%2Fphp_classes%2Ftypes.php;0;4
-FILE_NAME_1=4617;PHP;0;EUTF-8;1;1;0;%2Fhome%2Flenscas%2Flua%2Fimport_scryfall%2Fphp_classes%2FcolorArray.php;0;4
-FILE_NAME_2=1148;PHP;0;EUTF-8;1;1;0;%2Fhome%2Flenscas%2Flua%2Fimport_scryfall%2Fnew_import.php;0;4
-FILE_NAME_3=0;Lua;0;EUTF-8;1;1;0;%2Fhome%2Flenscas%2Flua%2Fimport_scryfall%2FimportSets.lua;0;4
-FILE_NAME_4=0;None;0;EUTF-8;1;1;0;%2Fhome%2Flenscas%2F15;0;4
-FILE_NAME_5=0;PHP;0;EUTF-8;1;1;0;%2Fhome%2Flenscas%2Flua%2Fimport_scryfall%2Fphp_classes%2FimageUris.php;0;4
-FILE_NAME_6=369;PHP;0;EUTF-8;1;1;0;%2Fhome%2Flenscas%2Flua%2Fimport_scryfall%2Fphp_classes%2Fdb.php;0;4
-FILE_NAME_7=1690;PHP;0;EUTF-8;1;1;0;%2Fhome%2Flenscas%2Flua%2Fimport_scryfall%2Fphp_classes%2FcardFace.php;0;4
-
 [VTE]
 last_dir=/home/lenscas/lua/import_scryfall
 
@@ -47,3 +36,14 @@ ignored_dirs_patterns=.*;CVS;
 ignored_file_patterns=*.o;*.obj;*.a;*.lib;*.so;*.dll;*.lo;*.la;*.class;*.jar;*.pyc;*.mo;*.gmo;
 generate_tag_prefs=0
 external_dirs=
+
+[files]
+current_page=4
+FILE_NAME_0=1759;PHP;0;EUTF-8;1;1;0;%2Fhome%2Flenscas%2Flua%2Fimport_scryfall%2Fphp_classes%2Ftypes.php;0;4
+FILE_NAME_1=4617;PHP;0;EUTF-8;1;1;0;%2Fhome%2Flenscas%2Flua%2Fimport_scryfall%2Fphp_classes%2FcolorArray.php;0;4
+FILE_NAME_2=1148;PHP;0;EUTF-8;1;1;0;%2Fhome%2Flenscas%2Flua%2Fimport_scryfall%2Fnew_import.php;0;4
+FILE_NAME_3=0;Lua;0;EUTF-8;1;1;0;%2Fhome%2Flenscas%2Flua%2Fimport_scryfall%2FimportSets.lua;0;4
+FILE_NAME_4=0;None;0;EUTF-8;1;1;0;%2Fhome%2Flenscas%2F15;0;4
+FILE_NAME_5=0;PHP;0;EUTF-8;1;1;0;%2Fhome%2Flenscas%2Flua%2Fimport_scryfall%2Fphp_classes%2FimageUris.php;0;4
+FILE_NAME_6=369;PHP;0;EUTF-8;1;1;0;%2Fhome%2Flenscas%2Flua%2Fimport_scryfall%2Fphp_classes%2Fdb.php;0;4
+FILE_NAME_7=1690;PHP;0;EUTF-8;1;1;0;%2Fhome%2Flenscas%2Flua%2Fimport_scryfall%2Fphp_classes%2FcardFace.php;0;4

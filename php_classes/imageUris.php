@@ -5,7 +5,7 @@ class imageUris {
 		$this->pdo = $db->pdo;
 
 		$this->insertCardFace = $this->pdo->prepare("
-			INSERT INTO ImagesUrl (
+			REPLACE INTO ImagesUrl (
 				`printFaceid`,
 				`small`,
 				`normal`,

@@ -29,6 +29,17 @@ class cardPrint{
 				:setId,
 				:languageid
 			)
+			ON DUPLICATE KEY UPDATE
+				CardId=           :CardId,
+				price=            :price,
+				foil=             :foil,
+				nonfoil=          :nonfoil,
+				oversized=        :oversized,
+				borderColor=      :borderColor,
+				collectorsNumber= :collectorsNumber,
+				fullArt=          :fullArt,
+				setId=            :setId,
+				languageid=       :languageid
 		"
 		);
 		$this->insertPrintSQL->bindParam(":Id",$this->Id);
@@ -63,6 +74,7 @@ class cardPrint{
 		if($card->eur ?? false){
 			$price = $card->eur * 100;
 		}
+		var_dump($card);
 		$this->Id = $card->id;
 		$this->CardId=$card->oracle_id;
 		$this->price=$price;

@@ -6,7 +6,7 @@ class db {
 		$user = 'C#';
 		$pass = 'C#';
 
-		$dsn = "mysql:host=$host;dbname=$db;";
+		$dsn = "mysql:host=$host;dbname=$db;charset=utf8";
 		$this->pdo = new PDO($dsn, $user, $pass);
 	}
 	public function saveExec (PDOStatement $sth){

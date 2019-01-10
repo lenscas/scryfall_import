@@ -79,12 +79,16 @@ $getPrints->bindParam(":cardId",$cardId);
 
 $update = $db->pdo->prepare("UPDATE Print SET isLatest=1 WHERE id=:printId");
 $update->bindParam(":printId",$printId);
+
+$removeLatest = $db->pdo->prepare("UPDATE Print SET isLatest=0 WHERE CardId = :cardId");
+$removeLatest->bindParam(":cardId",$cardId);
 foreach($allCards as $key=>$value){
 	$cardId = $value["id"];
 	$db->saveExec($getPrints);
 	$card = $getPrints->fetch(PDO::FETCH_ASSOC);
 	if($card){
 		$printId = $card["Id"];
+		$db->saveExec($removeLatest);
 		$db->saveExec($update);
 	}
 
